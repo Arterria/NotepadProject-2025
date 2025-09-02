@@ -48,6 +48,9 @@ def clearSearch():
     entry.tag_remove("highlight", "1.0", "end")
     searchEntry.delete(0, "end")
 
+def openSettings():
+    pass
+
 # Buttons
 openButton = tk.Button(canvas, text="Open", bg="White", command= openFile) # Button with text Open and background color white
 openButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
@@ -57,6 +60,9 @@ saveButton.pack(in_ = top, side="left") # moves button to the left and adds it t
 
 clearButton = tk.Button(canvas, text="Clear", bg="White", command= clearFile) # Button with text Clear and background color white
 clearButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
+
+settingsButton = tk.Button(canvas, text="Settings", bg="White", command= openSettings) # Button with text Settings and background color white
+settingsButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
 
 exitButton = tk.Button(canvas, text="Exit", bg="White", command= exit) # Button with text Save and background color white
 exitButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
