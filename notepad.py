@@ -58,7 +58,7 @@ saveButton.pack(in_ = top, side="left") # moves button to the left and adds it t
 clearButton = tk.Button(canvas, text="Clear", bg="White", command= clearFile) # Button with text Clear and background color white
 clearButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
 
-exitButton = tk.Button(canvas, text="Exit", bg="White", command= exit) # Button with text Save and background color white
+exitButton = tk.Button(canvas, text="Exit", bg="White", command= exit) # Button with text Exit and background color white
 exitButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
 
 searchEntry = tk.Entry(top, width=15)  # Entry widget for search input with width of 15 characters
