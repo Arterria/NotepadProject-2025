@@ -1,6 +1,7 @@
 from tkinter.filedialog import *
 import tkinter as tk
 import tkinter.simpledialog as simpledialog
+import tkinter.messagebox as messagebox
 
 
 canvas = tk.Tk()
@@ -28,7 +29,9 @@ def openFile():
     entry.insert("insert", content) # adds text from file to notepad
 
 def clearFile():
-    entry.delete(1.0, "end") # deletes text from start to end from notepad
+    confirm = messagebox.askyesno("Confirm Clear", "Are you sure you want to clear all text?")
+    if confirm:
+        entry.delete(1.0, "end") # deletes text from start to end from notepad
 
 def searchWord():
     entry.tag_remove("highlight", "1.0", "end")  # clear old highlights
