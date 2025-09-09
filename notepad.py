@@ -103,8 +103,21 @@ def openSettings():
     # Background Color Picker
     tk.Label(settings_win, text="Background Color:", bg="#f0f4f9").pack(pady=(10, 0))
     bg_color_var = tk.StringVar(value=entry["bg"])
-    bg_color_button = tk.Button(settings_win, text="Choose Color", command=lambda: chooseColor(bg_color_var))
-    bg_color_button.pack()
+
+    color_frame = tk.Frame(settings_win, bg="#f0f4f9")
+    color_frame.pack(pady=5)
+
+    bg_color_preview = tk.Label(color_frame, bg=bg_color_var.get(), width=3, height=1, relief="sunken", bd=1)
+    bg_color_preview.pack(side="right", padx=(10, 0))
+
+    def chooseColorWrapper():
+        color = colorchooser.askcolor(title="Choose Background Color")[1]
+        if color:
+            bg_color_var.set(color)
+            bg_color_preview.config(bg=color)
+
+    bg_color_button = tk.Button(color_frame, text="Choose Color", command=chooseColorWrapper)
+    bg_color_button.pack(side="left")
 
     # Apply Button
     apply_button = tk.Button(settings_win, text="Apply", bg="#f0f4f9", command=lambda: applySettings(font_family_var.get(), font_size_var.get(), bg_color_var.get(), settings_win))
