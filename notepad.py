@@ -2,6 +2,8 @@ from tkinter.filedialog import *
 import tkinter as tk
 import tkinter.simpledialog as simpledialog
 import tkinter.messagebox as messagebox
+import tkinter.font as tkFont
+import tkinter.colorchooser as colorchooser
 
 
 canvas = tk.Tk()
@@ -51,6 +53,54 @@ def clearSearch():
     entry.tag_remove("highlight", "1.0", "end")
     searchEntry.delete(0, "end")
 
+def openSettings():
+    settings_win = tk.Toplevel(canvas) # create window
+    settings_win.title("Settings") # window title
+    settings_win.geometry("300x250") # window size
+    settings_win.config(bg="#f0f4f9") # background color set to #f0f4f9
+    settings_win.transient(canvas) # keeps setting window above main notepad
+    settings_win.grab_set() # makes it so you can't use notepad unless you close settings window
+
+    # Current font settings
+    current_font = tkFont.Font(font=entry["font"])
+    current_family = current_font.actual("family")
+    current_size = current_font.actual("size")
+
+    # Font Family Dropdown
+    tk.Label(settings_win, text="Font Family:", bg="#f0f4f9").pack(pady=(10, 0))
+    font_family_var = tk.StringVar(value=current_family)
+    font_families = list(tkFont.families())
+    font_family_menu = tk.OptionMenu(settings_win, font_family_var, *sorted(font_families))
+    font_family_menu.pack()
+
+    # Font Size Spinbox
+    tk.Label(settings_win, text="Font Size:", bg="#f0f4f9").pack(pady=(10, 0))
+    font_size_var = tk.IntVar(value=current_size)
+    font_size_spin = tk.Spinbox(settings_win, from_=8, to=72, textvariable=font_size_var)
+    font_size_spin.pack()
+
+    # Background Color Picker
+    tk.Label(settings_win, text="Background Color:", bg="#f0f4f9").pack(pady=(10, 0))
+    bg_color_var = tk.StringVar(value=entry["bg"])
+    bg_color_button = tk.Button(settings_win, text="Choose Color", command=lambda: chooseColor(bg_color_var))
+    bg_color_button.pack()
+
+    # Apply Button
+    apply_button = tk.Button(settings_win, text="Apply", bg="#f0f4f9", command=lambda: applySettings(font_family_var.get(), font_size_var.get(), bg_color_var.get(), settings_win))
+    apply_button.pack(pady=10)
+
+def chooseColor(bg_color_var):
+    color = colorchooser.askcolor(title="Choose Background Color")[1]
+    if color:
+        bg_color_var.set(color)
+
+def applySettings(font_family, font_size, bg_color, settings_win):
+    try:
+        entry.config(font=(font_family, int(font_size)), bg=bg_color)
+        settings_win.destroy()  # Close the settings window after applying
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to apply settings:\n{e}")
+
 # Buttons
 openButton = tk.Button(canvas, text="Open", bg="White", command= openFile) # Button with text Open and background color white
 openButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
@@ -60,6 +110,9 @@ saveButton.pack(in_ = top, side="left") # moves button to the left and adds it t
 
 clearButton = tk.Button(canvas, text="Clear", bg="White", command= clearFile) # Button with text Clear and background color white
 clearButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
+
+settingsButton = tk.Button(canvas, text="Settings", bg="White", command= openSettings) # Button with text Settings and background color white
+settingsButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
 
 exitButton = tk.Button(canvas, text="Exit", bg="White", command= exit) # Button with text Exit and background color white
 exitButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
