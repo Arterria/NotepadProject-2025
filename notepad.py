@@ -35,23 +35,44 @@ def clearFile():
     if confirm:
         entry.delete(1.0, "end") # deletes text from start to end from notepad
 
-def searchWord():
-    entry.tag_remove("highlight", "1.0", "end")  # clear old highlights
-    word = searchEntry.get() # get word from search entry
-    if word: # if word is not empty
-        start_pos = "1.0" # start from the beginning of the text
-        while True: # loop to find all occurrences
-            start_pos = entry.search(word, start_pos, stopindex="end", nocase=1) # search for word, nocase=1 makes it case insensitive
-            if not start_pos: 
-                break  # if no more occurrences, break loop
-            end_pos = f"{start_pos}+{len(word)}c"  # calculate end position of the found word
-            entry.tag_add("highlight", start_pos, end_pos) # highlight the found word
-            start_pos = end_pos # move to the end of the found word for next search
-        entry.tag_config("highlight", background="yellow", foreground="black") # configure highlight tag with background and foreground color
+def openSearchWindow():
+    search_win = tk.Toplevel(canvas)
+    search_win.title("Search")
+    search_win.geometry("300x120")
+    search_win.config(bg="#f0f4f9")
+    search_win.transient(canvas)
 
-def clearSearch():
-    entry.tag_remove("highlight", "1.0", "end")
-    searchEntry.delete(0, "end")
+    tk.Label(search_win, text="Enter word to search:", bg="#f0f4f9").pack(pady=(10, 0))
+    search_var = tk.StringVar()
+    searchEntry = tk.Entry(search_win, textvariable=search_var, width=30)
+    searchEntry.pack(pady=5)
+
+    def search():
+        word = search_var.get()
+        entry.tag_remove("highlight", "1.0", "end")
+        if word:
+            start_pos = "1.0"
+            while True:
+                start_pos = entry.search(word, start_pos, stopindex="end", nocase=1)
+                if not start_pos:
+                    break
+                end_pos = f"{start_pos}+{len(word)}c"
+                entry.tag_add("highlight", start_pos, end_pos)
+                start_pos = end_pos
+            entry.tag_config("highlight", background="yellow", foreground="black")
+
+    def clear():
+        entry.tag_remove("highlight", "1.0", "end")
+        search_var.set("")
+
+    button_frame = tk.Frame(search_win, bg="#f0f4f9")
+    button_frame.pack(pady=10)
+
+    search_btn = tk.Button(button_frame, text="Search", command=search, bg="white")
+    search_btn.pack(side="left", padx=5)
+
+    clear_btn = tk.Button(button_frame, text="Clear", command=clear, bg="white")
+    clear_btn.pack(side="left", padx=5)
 
 def openSettings():
     settings_win = tk.Toplevel(canvas) # create window
@@ -114,17 +135,13 @@ clearButton.pack(in_ = top, side="left") # moves button to the left and adds it 
 settingsButton = tk.Button(canvas, text="Settings", bg="White", command= openSettings) # Button with text Settings and background color white
 settingsButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
 
+searchWindowButton = tk.Button(canvas, text="Search", bg="White", command= openSearchWindow) # Button with text Search and background color white
+searchWindowButton.pack(in_=top, side="left") # moves button to the left and adds it to "top" container
+
 exitButton = tk.Button(canvas, text="Exit", bg="White", command= exit) # Button with text Exit and background color white
 exitButton.pack(in_ = top, side="left") # moves button to the left and adds it to "top" container
 
-searchEntry = tk.Entry(top, width=15)  # Entry widget for search input with width of 15 characters
-searchEntry.pack(side="left", padx=5)   # moves entry to the left, adds padding and adds it to "top" container
 
-searchButton = tk.Button(top, text="Search", bg="White", command=searchWord) # Button with text Search and background color white
-searchButton.pack(side="left") # moves button to the left and adds it to "top" container
-
-clearSearchButton = tk.Button(top, text="✕", bg="White", command=clearSearch) # Button with text Clear and background color white
-clearSearchButton.pack(side="left") # moves button to the left and adds it to "top" container
 
 # Text Area
 entry = tk.Text(canvas, wrap = "word", bg = "White", font = ("Arial", 15)) # text area, wraps word when on edge, background color, font and fontsize
